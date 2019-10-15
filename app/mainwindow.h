@@ -107,6 +107,8 @@ class MainWindow : public KMainWindow
 
         void updateScreenMenu();
         void setScreen(QAction* action);
+        void setScreen(int screen);
+        void nextScreen();
 
         void setWindowWidth(int width);
         void setWindowHeight(int height);

@@ -268,6 +268,10 @@ void MainWindow::setupActions()
     action->setCheckable(true);
     connect(action, SIGNAL(toggled(bool)), this, SLOT(setKeepOpen(bool)));
 
+    action = actionCollection()->addAction(QStringLiteral("next-screen"));
+    action->setText(xi18nc("@action", "Next screen"));
+    connect(action, SIGNAL(triggered()), this, SLOT(nextScreen()));
+
     action = actionCollection()->addAction(QStringLiteral("manage-profiles"));
     action->setText(xi18nc("@action", "Manage Profiles..."));
     action->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
@@ -918,14 +922,26 @@ void MainWindow::setWindowGeometry(int newWidth, int newHeight, int newPosition)
     updateMask();
 }
 
-void MainWindow::setScreen(QAction* action)
+void MainWindow::setScreen(int screen)
 {
-    Settings::setScreen(action->data().toInt());
+    Settings::setScreen(screen);
     Settings::self()->save();
 
     applyWindowGeometry();
 
     updateScreenMenu();
+}
+
+void MainWindow::setScreen(QAction* action)
+{
+    setScreen(action->data().toInt());
+}
+
+void MainWindow::nextScreen()
+{
+    int current = getScreen(); // 0-based
+    int next = (current + 1) % QGuiApplication::screens().count();
+    setScreen(next + 1); // 1-based
 }
 
 void MainWindow::setWindowWidth(int width)
